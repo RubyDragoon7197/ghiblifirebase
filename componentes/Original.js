@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { auth, db } from '../firebase/firebaseConfig';
+import { doc, updateDoc, increment } from 'firebase/firestore';
 
 export default function Original() {
   const [peliculas, setPeliculas] = useState([]);
@@ -55,6 +57,24 @@ export default function Original() {
       .join('');
   };
 
+  // 🔥 Actualiza estadísticas en Firebase
+  const actualizarEstadisticas = async (resultado) => {
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
+
+    const ref = doc(db, 'usuarios', uid);
+
+    try {
+      if (resultado === 'victoria') {
+        await updateDoc(ref, { ganados: increment(1) });
+      } else if (resultado === 'derrota') {
+        await updateDoc(ref, { perdidos: increment(1) });
+      }
+    } catch (error) {
+      console.log("Error actualizando estadísticas:", error);
+    }
+  };
+
   const seleccionarLetra = (letra) => {
     if (letrasUsadas.includes(letra) || gameOver) return;
 
@@ -71,6 +91,7 @@ export default function Original() {
       if (nuevosErrores >= MAX_ERRORES) {
         setGameOver(true);
         Alert.alert('¡Perdiste!', `La película era: ${peliculaActual}`);
+        actualizarEstadisticas('derrota'); // 👈 suma derrota automáticamente
       }
     }
 
@@ -78,6 +99,7 @@ export default function Original() {
       setGano(true);
       setGameOver(true);
       Alert.alert('¡Ganaste!', `¡Adivinaste: ${peliculaActual}!`);
+      actualizarEstadisticas('victoria'); // 👈 suma victoria automáticamente
     }
   };
 
@@ -199,7 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#1565c0',
+    borderColor: '#1565c0', // 👈 corregido
   },
   letraUsada: {
     backgroundColor: '#ccc',
