@@ -5,7 +5,7 @@ const firebaseConfig = {
 apiKey: "AIzaSyAQUjioZBfdIAvuXeO0ktdNDtfBBREuSHA",
   authDomain: "studioghibli-513bd.firebaseapp.com",
   projectId: "studioghibli-513bd",
-  storageBucket: "studioghibli-513bd.firebasestorage.app",
+  storageBucket: "studioghibli-513bd.appspot.com",
   messagingSenderId: "482475502624",
   appId: "1:482475502624:web:36535c8f822cf1e4c22045",
   measurementId: "G-Y64GNQ44RM"
