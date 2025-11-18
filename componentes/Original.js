@@ -13,7 +13,6 @@ export default function Original() {
   const MAX_ERRORES = 6;
   const ABECEDARIO = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-  // Obtener películas de Ghibli
   useEffect(() => {
     const obtenerPeliculas = async () => {
       try {
@@ -28,7 +27,6 @@ export default function Original() {
     obtenerPeliculas();
   }, []);
 
-  // Iniciar un nuevo juego
   const iniciarJuego = (movies) => {
     if (movies.length === 0) return;
     const pelicula = movies[Math.floor(Math.random() * movies.length)];
@@ -40,7 +38,6 @@ export default function Original() {
     setGano(false);
   };
 
-  // Generar palabra con guiones
   const generarPalabraOculta = (palabra) => {
     return palabra
       .toUpperCase()
@@ -49,30 +46,24 @@ export default function Original() {
       .join('');
   };
 
-  // Revelar letras en la palabra
-  const revelarLetras = (letra, palabra) => {
-    return palabra
+  const revelarLetras = (letra, palabraOculta, palabraOriginal) => {
+    return palabraOculta
       .split('')
       .map((char, i) => {
-        if (char === '_' && palabra.toUpperCase()[i] === letra) {
-          return letra;
-        }
-        return char;
+        return palabraOriginal.toUpperCase()[i] === letra ? letra : char;
       })
       .join('');
   };
 
-  // Manejar click en letra
   const seleccionarLetra = (letra) => {
     if (letrasUsadas.includes(letra) || gameOver) return;
 
     const nuevasLetras = [...letrasUsadas, letra];
     setLetrasUsadas(nuevasLetras);
 
-    const palabraActualizada = revelarLetras(letra, palabraOculta);
+    const palabraActualizada = revelarLetras(letra, palabraOculta, peliculaActual);
     setPalabraOculta(palabraActualizada);
 
-    // Verificar si adivinó la letra
     if (!peliculaActual.toUpperCase().includes(letra)) {
       const nuevosErrores = errores + 1;
       setErrores(nuevosErrores);
@@ -83,7 +74,6 @@ export default function Original() {
       }
     }
 
-    // Verificar si ganó
     if (palabraActualizada === peliculaActual.toUpperCase()) {
       setGano(true);
       setGameOver(true);
@@ -91,12 +81,10 @@ export default function Original() {
     }
   };
 
-  // Reiniciar juego
   const reiniciar = () => {
     iniciarJuego(peliculas);
   };
 
-  // Dibujar ahorcado
   const dibujarAhorcado = () => {
     const fases = [
       '  H\n  |\n  |\n  |\n  |\n  |',
@@ -113,20 +101,16 @@ export default function Original() {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>🎬 Ahorcados Studio Ghibli 🎬</Text>
 
-      {/* Ahorcado */}
       <View style={styles.ahorcado}>
         <Text style={styles.dibujo}>{dibujarAhorcado()}</Text>
       </View>
 
-      {/* Errores */}
       <Text style={styles.errores}>
         Errores: {errores}/{MAX_ERRORES}
       </Text>
 
-      {/* Palabra */}
       <Text style={styles.palabra}>{palabraOculta}</Text>
 
-      {/* Letras */}
       <View style={styles.letrasContainer}>
         {ABECEDARIO.map((letra) => (
           <TouchableOpacity
@@ -150,7 +134,6 @@ export default function Original() {
         ))}
       </View>
 
-      {/* Botón Reiniciar */}
       {gameOver && (
         <TouchableOpacity onPress={reiniciar} style={styles.botonReiniciar}>
           <Text style={styles.textoBoton}>Nuevo Juego</Text>

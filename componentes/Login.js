@@ -10,13 +10,18 @@ export default function Login() {
   const navigation = useNavigation();
 
   const handleLogin = async () => {
+    if (!correo || !contrasena) {
+      Alert.alert('Campos incompletos', 'Por favor ingresa tu correo y contraseña');
+      return;
+    }
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, correo, contrasena);
       const user = userCredential.user;
       console.log('Usuario logueado:', user.uid);
 
       Alert.alert('Éxito', 'Inicio de sesión correcto');
-      navigation.navigate('Home'); // 👈 lleva al Home después de login
+      // ❌ No navegamos manualmente a 'Tabs', se hace automáticamente desde App.js
     } catch (error) {
       console.log('Error en login:', error);
       Alert.alert('Error al iniciar sesión', error.message);

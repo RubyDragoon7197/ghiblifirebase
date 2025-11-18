@@ -16,6 +16,11 @@ export default function Registro() {
   let perdidos = 0;
 
   const handleRegistro = async () => {
+    if (!nombre || !correo || !contrasena || !fecha || !telefono) {
+      Alert.alert('Campos incompletos', 'Por favor completa todos los campos');
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, correo, contrasena);
       const user = userCredential.user;
@@ -32,7 +37,7 @@ export default function Registro() {
       });
 
       Alert.alert('Éxito', 'Usuario registrado correctamente');
-      navigation.navigate('Login');
+      navigation.replace('Login'); // 👈 reemplaza para evitar volver atrás
     } catch (error) {
       console.log('Error en registro:', error);
       Alert.alert('Error al registrarse', error.message);
